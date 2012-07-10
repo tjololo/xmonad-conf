@@ -1,0 +1,25 @@
+Config { font = "-misc-fixed-*-*-*-*-10-*-*-*-*-*-*-*"
+       , bgColor = "black"
+       , fgColor = "grey"
+       , border = BottomB
+       , borderColor = "#222222"
+       , position = Top
+       , lowerOnStart = True
+       , commands = [ Run MultiCpu ["-L","3","-H","70","--high","red","--template","cpu1:<total0>% cpu2:<total1>%"] 30
+		    , Run Weather "BNN" ["-t","<station>: <tempC>C","-L","18","-H","25","--normal","green","--high","red","--low","lightblue"] 36000
+                    , Run Network "eth0" ["-L","0","-H","32","--normal","green","--high","red"] 10
+		    , Run Wireless "wlan0" ["-L","25","-H","75","--low","red","--high","green"] 30
+                    --, Run Cpu ["-L","3","-H","70","--high","red"] 30
+                    , Run Memory ["-t","Mem: <usedratio>%"] 100
+                    , Run Swap [] 10
+                    --, Run Com "uname" ["-s","-r"] "" 36000
+		    , Run Brightness ["-D","intel_backlight","-C","actual_brightness","-M","max_brightness","-t",""] 30
+                    , Run Date "%b%_d %Y %H:%M:%S" "date" 10
+		    , Run Battery ["-L","50","-H","75","--high","green","--normal","yellow", "--low", "red", "--template", "bat:<left>%"] 100
+		    , Run CoreTemp ["-L","40","-H","55","-l","green","-h","red","-t","(<core0> | <core1>)"] 30
+		    , Run XMonadLog
+		    ]
+       , sepChar = "%"
+       , alignSep = "}{"
+       , template = "%XMonadLog%}{ <fc=#ee9a00>%date%</fc>| %wlan0wi% | %multicpu% %coretemp% | %memory% | %battery%"
+       }
