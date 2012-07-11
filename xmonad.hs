@@ -37,6 +37,7 @@ customPP = defaultPP
 main = do
     xmproc <- spawnPipe "/usr/bin/xmobar /home/tjololo/.xmobarrc"
     xmproc <- spawnPipe "/usr/bin/xscreensaver -nosplash"
+    xmproc <- spawnPipe "/usr/bin/udiskie"
     xmonad $ defaultConfig
         { workspaces = myWorkspaces
 	,manageHook = manageDocks <+> myManageHooks
@@ -57,4 +58,7 @@ main = do
         , ((controlMask, xK_Print), spawn "sleep 0.2; scrot -s")
         , ((0, xK_Print), spawn "scrot")
         , ((mod4Mask .|. shiftMask, xK_f), spawn "chromium")
+	, ((mod4Mask .|. shiftMask, xK_t), spawn "thunar")
+	, ((mod4Mask .|. shiftMask, xK_v), spawn "vlc")
+	, ((mod4Mask .|. shiftMask, xK_m), spawn "xterm alsamixer")
         ]
