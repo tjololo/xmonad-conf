@@ -9,23 +9,33 @@ import System.IO
 import qualified XMonad.StackSet as W
 import XMonad.Hooks.ManageHelpers
 import XMonad.Layout.NoBorders
+import XMonad.Layout.Tabbed
+import XMonad.Layout.Accordion
 
-
+----------------------------------------------------------------------------------------
+--------				Workspaces				--------
+----------------------------------------------------------------------------------------
 myWorkspaces = ["1:main","2:web","3:chat","4:dev","5:media","6","7","8","9:minimized"]
-myManageHooks = composeAll
-        -- [ isFullscreen --> (doF W.focusDown <+> doFullFloat)
 
+----------------------------------------------------------------------------------------
+--------				Shift/Float				--------
+----------------------------------------------------------------------------------------
+myManageHooks = composeAll
         [ isFullscreen --> doFullFloat
 	, className =? "Chromium" --> doShift "2:web"
 	, className =? "Vlc" --> doShift "5:media"
 	, className =? "Dia" --> doShift "4:dev"
 	, className =? "jetbrains-idea-ce" --> doShift "4:dev"
+	, className =? "Spotify" --> doShift "5:media"
 	, className =? "jetbrains-idea-ce" --> doFloat
 	, className =? "Gimp" --> doFloat
 	, className =? "Dia" --> doFloat
          -- skipped
         ]
 
+----------------------------------------------------------------------------------------
+--------				Statusbar				--------
+----------------------------------------------------------------------------------------
 customPP = defaultPP
 		{ ppCurrent = xmobarColor "yellow" "" . wrap "[" "]"
 		, ppHiddenNoWindows = id . xmobarColor "#777777" ""
@@ -34,6 +44,19 @@ customPP = defaultPP
 		, ppSep = " |     "
 		}
 
+----------------------------------------------------------------------------------------
+--------				Layout					--------
+----------------------------------------------------------------------------------------
+myLayoutHook = tiled ||| noBorders Full ||| tabbed shrinkText defaultTheme ||| Accordion
+	where
+		tiled = Tall nmaster delta ratio
+		nmaster = 1
+		ratio = 1/2
+		delta = 3/100
+
+----------------------------------------------------------------------------------------
+--------				Main					--------
+----------------------------------------------------------------------------------------
 main = do
     xmproc <- spawnPipe "/usr/bin/xmobar /home/tjololo/.xmobarrc"
     xmproc <- spawnPipe "/usr/bin/xscreensaver -nosplash"
@@ -42,18 +65,24 @@ main = do
         { workspaces = myWorkspaces
 	,manageHook = manageDocks <+> myManageHooks
 			<+> manageHook defaultConfig
-        , layoutHook = avoidStruts  $  layoutHook defaultConfig
+--        , layoutHook = avoidStruts  $  layoutHook defaultConfig ||| noBorders Full
+	, layoutHook = avoidStruts $ smartBorders (myLayoutHook)
 	, logHook = dynamicLogString customPP >>= xmonadPropLog
         , modMask = mod4Mask --Rebind Mod to windows key
 	, terminal = "xterm -bg black -fg green"
 	, normalBorderColor = "#222222"
-	, focusedBorderColor = "#444444"
+	, focusedBorderColor = "#00EE00"
 	, startupHook = setWMName "LG3D"
         } `additionalKeys`
+
+----------------------------------------------------------------------------------------
+--------				Shortcuts				--------
+----------------------------------------------------------------------------------------
         [ ((mod4Mask .|. shiftMask, xK_z), spawn "xscreensaver-command -lock")
         , ((controlMask, xK_Print), spawn "sleep 0.2; scrot -s")
         , ((0, xK_Print), spawn "scrot")
         , ((mod4Mask .|. shiftMask, xK_f), spawn "chromium")
+	, ((mod4Mask .|. shiftMask, xK_s), spawn "chromium --proxy-server=socks://localhost:8080")
 	, ((mod4Mask .|. shiftMask, xK_t), spawn "thunar")
 	, ((mod4Mask .|. shiftMask, xK_v), spawn "vlc")
 	, ((mod4Mask .|. shiftMask, xK_m), spawn "xterm alsamixer")
