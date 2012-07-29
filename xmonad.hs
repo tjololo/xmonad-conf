@@ -43,10 +43,6 @@ main = do
 	,manageHook = manageDocks <+> myManageHooks
 			<+> manageHook defaultConfig
         , layoutHook = avoidStruts  $  layoutHook defaultConfig
---	, logHook = dynamicLogWithPP xmobarPP  
---             		{ ppOutput = hPutStrLn xmproc  
---			, ppTitle = xmobarColor "blue" "" . shorten 50
---             		}	  
 	, logHook = dynamicLogString customPP >>= xmonadPropLog
         , modMask = mod4Mask --Rebind Mod to windows key
 	, terminal = "xterm -bg black -fg green"
