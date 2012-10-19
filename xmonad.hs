@@ -15,7 +15,7 @@ import XMonad.Layout.Accordion
 ----------------------------------------------------------------------------------------
 --------				Workspaces				--------
 ----------------------------------------------------------------------------------------
-myWorkspaces = ["1:main","2:web","3:chat","4:dev","5:media","6","7","8","9:minimized"]
+myWorkspaces = ["1:main","2:web","3:chat","4:dev","5:media","6:div","7","8","9:minimized"]
 
 ----------------------------------------------------------------------------------------
 --------				Shift/Float				--------
@@ -40,7 +40,7 @@ customPP = defaultPP
 		{ ppCurrent = xmobarColor "yellow" "" . wrap "[" "]"
 		, ppHiddenNoWindows = id . xmobarColor "#777777" ""
 		, ppLayout = const ""
-		, ppTitle = xmobarColor "#ee9a44" "" . shorten 70
+		, ppTitle = xmobarColor "#ee9a44" "" . shorten 65
 		, ppSep = " |     "
 		}
 
@@ -67,9 +67,10 @@ main = do
 			<+> manageHook defaultConfig
 --        , layoutHook = avoidStruts  $  layoutHook defaultConfig ||| noBorders Full
 	, layoutHook = avoidStruts $ smartBorders (myLayoutHook)
-	, logHook = dynamicLogString customPP >>= xmonadPropLog
+	, logHook = dynamicLogString customPP >>= xmonadPropLog -- dbusLog client >> takeTopFocus
         , modMask = mod4Mask --Rebind Mod to windows key
 	, terminal = "xterm -bg black -fg green"
+--	, terminal = "urxvt"
 	, normalBorderColor = "#222222"
 	, focusedBorderColor = "#00EE00"
 	, startupHook = setWMName "LG3D"
@@ -86,4 +87,8 @@ main = do
 	, ((mod4Mask .|. shiftMask, xK_t), spawn "thunar")
 	, ((mod4Mask .|. shiftMask, xK_v), spawn "vlc")
 	, ((mod4Mask .|. shiftMask, xK_m), spawn "xterm alsamixer")
+	, ((mod4Mask, xK_s), spawn "spotify")
+	, ((0 , 0x1008ff12), spawn "amixer -q set Master toggle")
+	, ((0 , 0x1008ff11), spawn "amixer -q set Master 1- unmute")
+	, ((0 , 0x1008ff13), spawn "amixer -q set Master 1+ unmute")
         ]
